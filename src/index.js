@@ -4,65 +4,50 @@ import ReactDOM from 'react-dom'
 // Tapahtumankäsittely
 // käyttäjän interaktio sivun elementtien kanssa aiheuttaa joukon erinäisiä tapahtumia
 
-const Hello = ({name, age}) => {
-  const bornYear = () => new Date().getFullYear() - age
+/*const Display = (props) => {
   return (
-    <div>
-      <p>
-        Hello {name}, you are {age} years old
-      </p>
-      <p>
-        So you were probably born {bornYear()}
-      </p>    
-    </div>
+    <div>{props.counter}</div>
   )
-}
+}*/
 
-// laskurin kasvaminen tapahtuukin käyttäjän painaessa button-elementin avulla toteutettua nappia
+//Yksikertaisemmin destrukturoimalla propsi(t):
+/*const Display = ({counter}) => {
+  return (
+    <div>{counter}</div>
+  )
+}*/
+
+//Ja vielä tiiviimmin, koska sisältää vain returnin:
+const Display = ({counter}) => <div>{counter}</div>
+
+//Tehdään seuraavaksi napeille tarkoitettu komponentti Button. 
+//Napille on välitettävä propsien avulla tapahtumankäsittelijä sekä napin teksti:
+const Button = ({handleClick, text}) => (
+  <button onClick={handleClick}>
+    {text}
+  </button>
+)
+
+// laskurin kasvaminen tapahtuu käyttäjän painaessa button-elementin avulla toteutettua nappia
 const App = (props) => {
     const [counter, setCounter] = useState(0)
-    const nimi = 'Pekka'
-    const ika = 10
-  
-    //const handleClick = () => {
-    //Tapa 1:
-    /*const increaseByOne = () => {
-      console.log('klicked')
-      setCounter(counter + 1)
-    }
-    const setToZero = () => setCounter(0)
-    Kutsut:
-        <button onClick={increaseByOne}> plus </button>
-        <button onClick={setToZero}> zero </button>
-    */
-    /*
-    //Tapa 2:
-    //Geneerisempi funktio
-    const setToValue = (value) => setCounter(value)
-    Kutsut:
-        <button onClick={() => setToValue(counter+1)}> plus </button>
-        <button onClick={() => setToValue(0)}> zero </button>
-    */
-
-    //Tapa 3: Javascriptin ja yleisemminkin funktionaalisen ohjelmoinnin kikka, eli määritellään funktio joka palauttaa funktion
-    //ei ehkä järkevä tähän sovellukseen
-    const setToValue = (value) => {
-      return () => {
-        setCounter(value)
-      }
-    }
-    //Tiivimpi muoto: const setToValue = (value) => () => setCounter(value)
+    const setToValue = (value) => () => setCounter(value)
 
     return (
       <div>
-        <div>{counter}</div>
-        <button onClick={setToValue(counter+1)}> plus </button>
-        <button onClick={setToValue(0)}> zero </button>
-
-        <Hello name="Arto" age={26 + 10}/>
-        <Hello name={nimi} age={ika} value={1+2}/>  
+        <Display counter={counter}/>
+        <Button handleClick={setToValue(counter + 1)} text='plus'/>
+        <Button handleClick={setToValue(counter - 1)} text='minus'/>
+        <Button handleClick={setToValue(0)} text='zero'/>
       </div>
     )
+    //Vanha button, ilman Button komponenttia
+    /*  <button onClick={setToValue(counter + 1)}>
+          plus
+        </button>
+        <button onClick={setToValue(0)}>
+          zero
+        </button>*/
 }
 
 ReactDOM.render(<App />, document.getElementById('root'))
