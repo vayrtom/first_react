@@ -1,36 +1,68 @@
-import React from 'react'
+import React, {useState} from 'react'
 import ReactDOM from 'react-dom'
 
-const Hello = (props) => {
+// Tapahtumankäsittely
+// käyttäjän interaktio sivun elementtien kanssa aiheuttaa joukon erinäisiä tapahtumia
+
+const Hello = ({name, age}) => {
+  const bornYear = () => new Date().getFullYear() - age
   return (
     <div>
-      <p>Hello {props.name} {props.value}, you are {props.age} years old</p>
+      <p>
+        Hello {name}, you are {age} years old
+      </p>
+      <p>
+        So you were probably born {bornYear()}
+      </p>    
     </div>
   )
 }
 
-const Footer = () => {
-  return (
-    <div>
-      greeting app created by
-      <a href="https://github.com/vayrtom">vayrtom</a>
-    </div>
-  )
-}
+// laskurin kasvaminen tapahtuukin käyttäjän painaessa button-elementin avulla toteutettua nappia
+const App = (props) => {
+    const [counter, setCounter] = useState(0)
+    const nimi = 'Pekka'
+    const ika = 10
+  
+    //const handleClick = () => {
+    //Tapa 1:
+    /*const increaseByOne = () => {
+      console.log('klicked')
+      setCounter(counter + 1)
+    }
+    const setToZero = () => setCounter(0)
+    Kutsut:
+        <button onClick={increaseByOne}> plus </button>
+        <button onClick={setToZero}> zero </button>
+    */
+    /*
+    //Tapa 2:
+    //Geneerisempi funktio
+    const setToValue = (value) => setCounter(value)
+    Kutsut:
+        <button onClick={() => setToValue(counter+1)}> plus </button>
+        <button onClick={() => setToValue(0)}> zero </button>
+    */
 
-const App = () => {
-  const nimi = 'Pekka'
-  const ika = 10
+    //Tapa 3: Javascriptin ja yleisemminkin funktionaalisen ohjelmoinnin kikka, eli määritellään funktio joka palauttaa funktion
+    //ei ehkä järkevä tähän sovellukseen
+    const setToValue = (value) => {
+      return () => {
+        setCounter(value)
+      }
+    }
+    //Tiivimpi muoto: const setToValue = (value) => () => setCounter(value)
 
-  return (
-    <>
-      <h1>Greetings</h1>
-      <Hello name="Arto" age={26 + 10}/>
-      <Hello name={nimi} age={ika} value={1+2}/>
-      <Hello />
-      <Footer />
-    </>
-  )
+    return (
+      <div>
+        <div>{counter}</div>
+        <button onClick={setToValue(counter+1)}> plus </button>
+        <button onClick={setToValue(0)}> zero </button>
+
+        <Hello name="Arto" age={26 + 10}/>
+        <Hello name={nimi} age={ika} value={1+2}/>  
+      </div>
+    )
 }
 
 ReactDOM.render(<App />, document.getElementById('root'))
